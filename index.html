@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        :root {
+            --neon-blue: #00f2fe;
+            --neon-purple: #9d50bb;
+        }
+
+        body {
+            margin: 0; background: #000;
+            height: 100vh; display: flex;
+            justify-content: center; align-items: center;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .data-hub {
+            width: 350px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--neon-blue);
+            border-radius: 15px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.1);
+            overflow: hidden;
+        }
+
+        /* স্ক্যানিং লাইন ইফেক্ট */
+        .data-hub::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 2px; background: var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue);
+            animation: scanLine 4s linear infinite;
+        }
+
+        @keyframes scanLine { 0% { top: 0; } 100% { top: 100%; } }
+
+        .time-display {
+            font-size: 45px; color: #fff;
+            text-align: center; margin-bottom: 20px;
+            text-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .stat-row {
+            display: flex; justify-content: space-between;
+            margin-bottom: 10px; color: var(--neon-blue);
+            font-size: 12px; text-transform: uppercase;
+        }
+
+        /* প্রগ্রেস বার */
+        .progress-bg {
+            width: 100%; height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px; margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%; width: 65%;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            box-shadow: 0 0 10px var(--neon-blue);
+            animation: pulseWidth 3s infinite alternate;
+        }
+
+        @keyframes pulseWidth { 0% { width: 40%; } 100% { width: 90%; } }
+
+        /* ওয়েব ফর্ম এনিমেশন (Canvas) */
+        canvas {
+            width: 100%; height: 60px;
+            border-top: 1px solid rgba(0, 242, 254, 0.2);
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="data-hub">
+        <div class="stat-row"><span>System Time</span><span>Zone: UTC+6</span></div>
+        <div class="time-display" id="clock">00:00:00</div>
+        
+        <div class="stat-row"><span>Neural Processing</span><span>84%</span></div>
+        <div class="progress-bg"><div class="progress-fill"></div></div>
+
+        <div class="stat-row"><span>Data Stream</span><span id="random-val">128.4 kb/s</span></div>
+        <canvas id="waveCanvas"></canvas>
+    </div>
+
+    <script>
+        // ঘড়ি আপডেট
+        function updateClock() {
+            const now = new Date();
+            const time = now.toTimeString().split(' ')[0];
+            document.getElementById('clock').innerText = time;
+            document.getElementById('random-val').innerText = (Math.random() * 500).toFixed(1) + " kb/s";
+        }
+        setInterval(updateClock, 1000);
+
+        // ওয়েব ফর্ম ড্রয়িং
+        const canvas = document.getElementById('waveCanvas');
+        const ctx = canvas.getContext('2d');
+        let offset = 0;
+
+        function drawWave() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#00f2fe';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            for (let x = 0; x < canvas.width; x++) {
+                const y = Math.sin(x * 0.05 + offset) * 15 + 30;
+                ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            offset += 0.1;
+            requestAnimationFrame(drawWave);
+        }
+        drawWave();
+    </script>
+</body>
+</html>

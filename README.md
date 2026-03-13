@@ -1,1 +1,0 @@
-# Time-count-of-ai-
